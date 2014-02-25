@@ -32,7 +32,7 @@ public class TemplateEngine {
 	/**
 	* @param openString String that initializes a template sequence
 	* @param closeString String that closes a template sequence
-	* @param throws IllegalArgumentException if open or close string is empty or contains '\'
+	* @throws IllegalArgumentException if open or close string is empty or contains '\'
 	*/
 	public TemplateEngine(String openString, String closeString) {
 		if (!ValidTemplate(openString, closeString))

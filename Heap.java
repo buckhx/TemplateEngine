@@ -1,3 +1,5 @@
+//package com.buck.util.heap;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -7,27 +9,15 @@ import java.util.ArrayList;
 */
 class Heap<T extends Comparable<T>> {
 
-	/**
-	* Enum to be used to determine type of heap
-	* Has set values in order to dynamically create heap
-	*/
-	public enum HeapType {
-		MIN(-1),
-		MAX(1);
-
-		private int value;    
-
-		private HeapType(int value) {
-			this.value = value;
-		}
-
-		public int getValue() {
-			return value;
-		}
-	} 
-
 	private HeapType type;
 	private List<T> values;
+
+	/**
+	* Default constructor is a max-heap
+	*/
+	public Heap() {
+		this(HeapType.MAX);
+	}
 
 	/**
 	* @param type the type of heap this instance will follow
@@ -175,6 +165,24 @@ class Heap<T extends Comparable<T>> {
 		return (2 * i) + 2;
 	} 
 
+	/**
+	* Enum to be used to determine type of heap
+	* Has set values in order to dynamically create heap
+	*/
+	public enum HeapType {
+		MIN(-1),
+		MAX(1);
+
+		private int value;    
+
+		private HeapType(int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	} 
 	public static void main(String[] args) {
 		Heap<Integer> heap = new Heap<Integer>(HeapType.MAX);
 		heap.insert(1);

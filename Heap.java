@@ -18,20 +18,20 @@ class Heap<T extends Comparable<T>> {
 	private static int Equal = 0;
 	private static int Satisfied = 1;
 
-	private HeapType type;
+	private Type type;
 	private List<T> values;
 
 	/**
 	* Default constructor is a max-heap
 	*/
 	public Heap() {
-		this(HeapType.MAX);
+		this(Type.MAX);
 	}
 
 	/**
 	* @param type the type of heap this instance will follow
 	*/
-	public Heap(HeapType type) {
+	public Heap(Type type) {
 		this.type = type;
 		this.values = new ArrayList<T>();
 	}
@@ -187,13 +187,13 @@ class Heap<T extends Comparable<T>> {
 	* Enum to be used to determine type of heap
 	* Has set values in order to dynamically create heap
 	*/
-	public enum HeapType {
+	public enum Type {
 		MIN(-1),
 		MAX(1);
 
 		private int value;    
 
-		private HeapType(int value) {
+		private Type(int value) {
 			this.value = value;
 		}
 
@@ -207,7 +207,7 @@ class Heap<T extends Comparable<T>> {
 	*/
 	public static void main(String[] args) {
 		System.out.println("Running Tests\n=============\n");
-		Heap<Integer> int_heap = new Heap<Integer>(HeapType.MAX);
+		Heap<Integer> int_heap = new Heap<Integer>(Type.MAX);
 		int_heap.insert(1);
 		int_heap.insert(2);
 		int_heap.insert(2);
@@ -222,7 +222,7 @@ class Heap<T extends Comparable<T>> {
 				throw new AssertionError("Invalid max heap "+next+" > "+cur+"");
 			cur = next;
 		}
-		int_heap = new Heap<Integer>(HeapType.MIN);
+		int_heap = new Heap<Integer>(Type.MIN);
 		int_heap.insert(2);
 		int_heap.insert(1);
 		int_heap.insert(2);

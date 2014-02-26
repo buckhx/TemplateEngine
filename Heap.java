@@ -9,6 +9,15 @@ import java.util.ArrayList;
 */
 class Heap<T extends Comparable<T>> {
 
+	// Flags for down-heaping
+	private static int NoHeap = 0;
+	private static int LeftHeap = -1;
+	private static int RightHeap = 1;
+	// Flags for heapCompare
+	private static int NotSatisfied = -1;
+	private static int Equal = 0;
+	private static int Satisfied = 1;
+
 	private HeapType type;
 	private List<T> values;
 
@@ -32,7 +41,7 @@ class Heap<T extends Comparable<T>> {
 	* @return size of the heap
 	*/
 	public int size() {
-		return this.values.size();
+		return values.size();
 	}
 
 	/**
@@ -57,7 +66,7 @@ class Heap<T extends Comparable<T>> {
 			return false;
 		T cur = values.get(index);
 		T parent = values.get(ParentIndex(index));
-		return (heapCompare(cur, parent) > 0);
+		return (heapCompare(parent, cur) == NotSatisfied);
 	}
 	
 	/**
@@ -86,12 +95,12 @@ class Heap<T extends Comparable<T>> {
 		T last = values.remove(values.size() - 1);
 		int index = 0;
 		int needsDownHeap = hasDownHeap(index);
-		while (needsDownHeap != 0) {
+		while (needsDownHeap != NoHeap) {
 			needsDownHeap = hasDownHeap(index);
 			int swapIndex;
-			if (needsDownHeap < 0) {
+			if (needsDownHeap == LeftHeap) {
 				swapIndex = LeftChildIndex(index);
-			} else if (needsDownHeap > 0) {
+			} else if (needsDownHeap == RightHeap) {
 				swapIndex = RightChildIndex(index);
 			} else {
 				swapIndex = index;
@@ -104,7 +113,7 @@ class Heap<T extends Comparable<T>> {
 
 	/**
 	* Takes an index and determines if a down heap is needed
-	* Also returns whether to downheap left or right
+	* Also returns whether to downheap left or right in form of NoHeap,LeftHeap,RightHeap declarations
 	* Chooses which to downheap based on HeapType
 	* @return 0 if no down heap, -1 if left downheap or 1 if right downheap
 	*/ 
@@ -113,23 +122,23 @@ class Heap<T extends Comparable<T>> {
 		int rightIndex = RightChildIndex(index);
 		// No Children
 		if (leftIndex >= values.size())
-			return 0;
+			return NoHeap;
 		T value = values.get(index);
 		T leftValue = values.get(leftIndex);
 		// Left child only and needs to be heaped
-		if (rightIndex >= values.size() && heapCompare(value, leftValue) < 0) 
-			return -1;
+		if (rightIndex >= values.size() && heapCompare(value, leftValue) == NotSatisfied) 
+			return LeftHeap;
 		// Left child only and no heap
 		if (rightIndex >= values.size())
-			return 0;
+			return NoHeap;
 		T rightValue = values.get(rightIndex);
 		// Select child to heap based on type if needed
-		if (heapCompare(leftValue, rightValue) > 0 && heapCompare(value, leftValue) < 0)
-			return -1;
-		if (heapCompare(value, rightValue) < 0)
-			return 1;
+		if (heapCompare(leftValue, rightValue) == Satisfied && heapCompare(value, leftValue) == NotSatisfied)
+			return LeftHeap;
+		if (heapCompare(value, rightValue) == NotSatisfied)
+			return RightHeap;
 		// Children satisfied heap
-		return 0;
+		return NoHeap;
 	}
 
 	/**
@@ -149,7 +158,13 @@ class Heap<T extends Comparable<T>> {
 	* @return -1 if Heap is not satisfied, 0 if equal and 1 if satisfied
 	*/
 	private int heapCompare(T one, T two) {
-		return one.compareTo(two)*type.getValue();
+		int val = one.compareTo(two)*type.getValue();
+		if (val > 0)
+			return Satisfied;
+		else if (val < 0)
+			return NotSatisfied;
+		else
+			return Equal;
 	}
 
 	private boolean validIndex(int val) {
@@ -208,11 +223,11 @@ class Heap<T extends Comparable<T>> {
 			cur = next;
 		}
 		int_heap = new Heap<Integer>(HeapType.MIN);
+		int_heap.insert(2);
 		int_heap.insert(1);
 		int_heap.insert(2);
-		int_heap.insert(2);
-		int_heap.insert(4);
 		int_heap.insert(5);
+		int_heap.insert(4);
 		System.out.println("min-heap");
 		cur = int_heap.peek();
 		while (int_heap.size() > 0) {

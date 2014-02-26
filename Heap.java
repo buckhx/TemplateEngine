@@ -1,11 +1,11 @@
-//package com.buck.util.heap;
-
 import java.util.List;
 import java.util.ArrayList;
 
 /**
-* A binary heap implementation. Can be a min or max heap depending on HeapType
-* @author Buck heroux
+* A binary heap implementation for inputs that implement Comparable. 
+* Can be a min or max heap depending on HeapType.
+* Does not support concurrency.
+* @author Buck Heroux
 */
 class Heap<T extends Comparable<T>> {
 
@@ -119,6 +119,9 @@ class Heap<T extends Comparable<T>> {
 		// Left child only and needs to be heaped
 		if (rightIndex >= values.size() && heapCompare(value, leftValue) < 0) 
 			return -1;
+		// Left child only and no heap
+		if (rightIndex >= values.size())
+			return 0;
 		T rightValue = values.get(rightIndex);
 		// Select child to heap based on type if needed
 		if (heapCompare(leftValue, rightValue) > 0 && heapCompare(value, leftValue) < 0)
@@ -134,7 +137,7 @@ class Heap<T extends Comparable<T>> {
 	*/
 	private void swap(int one, int two) {
 		if (!validIndex(one) || !validIndex(two))
-			throw new IllegalArgumentException("Invalid indexes "+one+" "+two+" "+" in size "+values.size()); //TODO add state
+			throw new IllegalArgumentException("Invalid indexes "+one+" "+two+" "+" in size "+values.size());
 		T oneVal = values.get(one);
 		T twoVal = values.get(two);
 		values.set(one, twoVal);
@@ -183,16 +186,71 @@ class Heap<T extends Comparable<T>> {
 			return value;
 		}
 	} 
+	
+	/**
+	* Main runs tests on this heap implementation. Ignores input.
+	*/
 	public static void main(String[] args) {
-		Heap<Integer> heap = new Heap<Integer>(HeapType.MAX);
-		heap.insert(1);
-		heap.insert(2);
-		heap.insert(3);
-		heap.insert(4);
-		heap.insert(5);
-		while (heap.size() > 0) {
-			System.out.println(heap.remove());
+		System.out.println("Running Tests\n=============\n");
+		Heap<Integer> int_heap = new Heap<Integer>(HeapType.MAX);
+		int_heap.insert(1);
+		int_heap.insert(2);
+		int_heap.insert(2);
+		int_heap.insert(4);
+		int_heap.insert(5);
+		System.out.println("max-heap");
+		Integer cur = int_heap.peek();
+		while (int_heap.size() > 0) {
+			Integer next = int_heap.remove();
+			System.out.println(next);
+			if (next > cur)
+				throw new AssertionError("Invalid max heap "+next+" > "+cur+"");
+			cur = next;
 		}
+		int_heap = new Heap<Integer>(HeapType.MIN);
+		int_heap.insert(1);
+		int_heap.insert(2);
+		int_heap.insert(2);
+		int_heap.insert(4);
+		int_heap.insert(5);
+		System.out.println("min-heap");
+		cur = int_heap.peek();
+		while (int_heap.size() > 0) {
+			Integer next = int_heap.remove();
+			System.out.println(next);
+			if (next < cur)
+				throw new AssertionError("Invalid min heap "+next+" < "+cur+"");
+			cur = next;
+		}
+		Heap<Character> char_heap = new Heap<Character>();
+		char_heap.insert('a');
+		char_heap.insert('b');
+		char_heap.insert('c');
+		char_heap.insert('d');
+		char_heap.insert('e');
+		System.out.println("char max-heap");
+		while (char_heap.size() > 0) {
+			System.out.println(char_heap.remove());
+		}
+		System.out.println("operations tests");
+		int_heap = new Heap<Integer>();
+		int_heap.insert(1);
+		int_heap.insert(2);
+		int_heap.peek();
+		while (int_heap.size() > 0) {
+			System.out.println(int_heap.peek());
+			System.out.println(int_heap.remove());
+		}
+		if (int_heap.peek() != null)
+			throw new AssertionError("Empty peek did not return null");
+		try {
+			int_heap.remove();
+			throw new AssertionError("Empty heap didn't throw");
+		} catch (IllegalStateException e) {
+				//System.out.println(e);
+		}
+		System.out.println("Success!");
+		System.exit(0);
 	} 
 }
 

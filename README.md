@@ -7,4 +7,4 @@ So far theres
 
 * TemplateEngine
 * Heap
-* Solution (for hHeap)
+* Solution (for Heap)
